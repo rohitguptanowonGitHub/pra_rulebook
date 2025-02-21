@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pydantic
+fastapi
+uvicorn
+pydantic
+langchain-community
+openai
+pandas
+pinecone
+langchain_openai
+python-dotenv
+sys
