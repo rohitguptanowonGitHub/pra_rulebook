@@ -9,10 +9,10 @@ from app.models.LLMChatClient import LLMChatClient
 
 # Initialize Azure OpenAI
 openai_api_type_local = "azure"
-openai_api_base_local = "https://eygenaistudio-openai-dev.openai.azure.com/"
-openai_api_version_local = "2024-05-01-preview"
-openai_api_key_local = "07362a79cd45421b99f245cda89c71fb"
-pinecone_api_key = "pcsk_4NZkAC_NmmgNw869dExgqdZPesRhhLGDbQshb5Sg71K5vH5LHxAGcnTL7CxcPpHKAZwbU6"
+openai_api_base_local = ""
+openai_api_version_local = ""
+openai_api_key_local = ""
+pinecone_api_key = ""
 
 # Initialize Pinecone & Azure OpenAI
 pc = Pinecone(api_key=pinecone_api_key, ssl_verify=False)
