@@ -11,12 +11,14 @@ body {
 
 .sidebar {
   width: 200px;
-  background-color: #f4f4f4;
+  background-color: #ffffff;
   padding: 20px;
+  padding-top: 40px;
   text-align: center;
 }
 
 .logo {
+  margin-top: 40px;
   font-size: 24px;
   font-weight: bold;
 }
@@ -29,18 +31,21 @@ body {
 .main {
   flex: 1;
   padding: 20px;
+  background-color: rgb(231, 231, 231);
 }
 
 .header {
   text-align: center;
-  font-size: 24px;
-  margin-bottom: 20px;
+  font-size: 30px;
+  margin-bottom: 60px;
+  box-shadow: 0px 4px 4px 4px gray;
+  padding: 10px;
 }
 
 .dropdown-section {
   display: flex;
-  gap: 15px;
-  align-items: center;
+  gap: 100px;
+  justify-content: left;
   margin-bottom: 20px;
 }
 
@@ -51,15 +56,19 @@ body {
 
 .dropdown select {
   padding: 5px;
-  width: 200px;
+  width: 300px;
+  height: auto;
 }
 
 .interpret-button {
-  background-color: yellow;
+  background-color: #db0011;
   border: none;
-  padding: 10px 15px;
   cursor: pointer;
   font-weight: bold;
+  color: white;
+  width: 250px;
+  height: 40px;
+  border-radius: 10px;
 }
 
 .data-table {
@@ -76,4 +85,18 @@ body {
 
 .data-table th {
   background-color: #ddd;
+}
+.tsi {
+ width: 35%;
+}
+.articles{
+  width: 15%;
+}
+.interpretation{
+  width: 50%;
+}
+.loading {
+  text-align: center;
+  margin-top: 100px;
+  font-size: xx-large;
 }

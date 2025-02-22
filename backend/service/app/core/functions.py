@@ -8,12 +8,13 @@ from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
 from app.models.LLMChatClient import LLMChatClient
 
 # Initialize Azure OpenAI
-openai_api_type_local = "azure"
+
+openai_api_type_local = ""
 openai_api_base_local = ""
 openai_api_version_local = ""
 openai_api_key_local = ""
 pinecone_api_key = ""
-
+ 
 # Initialize Pinecone & Azure OpenAI
 pc = Pinecone(api_key=pinecone_api_key, ssl_verify=False)
 client = AzureOpenAI(api_key=openai_api_key_local, api_version=openai_api_version_local, azure_endpoint=openai_api_base_local)

@@ -1,154 +1,9 @@
-// import React, { useState } from "react";
-// import "./App.css";
-
-// const data = {
-//   "COR001 Own Funds": {
-//     schedules: {
-//       "C 02.00 - CREDIT AND COUNTERPARTY CREDIT RISK": [
-//         "Exposure in default subject to the support of 1075%-1520%",
-//       ],
-//     },
-//   },
-//   "COR002 Market Risk": {
-//     schedules: {
-//       "C 03.00 - Market Risk": [
-//         "Market exposure subject to support of 500%-1000%",
-//       ],
-//     },
-//   },
-// };
-
-// function App() {
-//   const [selectedReturn, setSelectedReturn] = useState("");
-//   const [selectedSchedule, setSelectedSchedule] = useState("");
-//   const [selectedItem, setSelectedItem] = useState("");
-
-//   const handleReturnChange = (event) => {
-//     setSelectedReturn(event.target.value);
-//     setSelectedSchedule("");
-//     setSelectedItem("");
-//   };
-
-//   const handleScheduleChange = (event) => {
-//     setSelectedSchedule(event.target.value);
-//     setSelectedItem("");
-//   };
-
-//   return (
-//     <div className="container">
-//       {/* Sidebar */}
-//       <div className="sidebar">
-//         <div className="logo">Logo</div>
-//         <div className="bank-name">Bank Name</div>
-//       </div>
-
-//       {/* Main Content */}
-//       <div className="main">
-//         <h2 className="header">Custom Website Header</h2>
-
-//         {/* Dropdown Section */}
-//         <div className="dropdown-section">
-//           <div className="dropdown">
-//             <label>Return ID/ Name:</label>
-//             <select value={selectedReturn} onChange={handleReturnChange}>
-//               <option value="">Select Return</option>
-//               {Object.keys(data).map((returnName) => (
-//                 <option key={returnName} value={returnName}>
-//                   {returnName}
-//                 </option>
-//               ))}
-//             </select>
-//           </div>
-
-//           <div className="dropdown">
-//             <label>Schedules:</label>
-//             <select
-//               value={selectedSchedule}
-//               onChange={handleScheduleChange}
-//               disabled={!selectedReturn}
-//             >
-//               <option value="">Select Schedule</option>
-//               {selectedReturn &&
-//                 Object.keys(data[selectedReturn].schedules).map((schedule) => (
-//                   <option key={schedule} value={schedule}>
-//                     {schedule}
-//                   </option>
-//                 ))}
-//             </select>
-//           </div>
-
-//           <div className="dropdown">
-//             <label>Item Value/ ID:</label>
-//             <select
-//               value={selectedItem}
-//               onChange={(e) => setSelectedItem(e.target.value)}
-//               disabled={!selectedSchedule}
-//             >
-//               <option value="">Select Item</option>
-//               {selectedSchedule &&
-//                 data[selectedReturn].schedules[selectedSchedule].map(
-//                   (item, index) => (
-//                     <option key={index} value={item}>
-//                       {item}
-//                     </option>
-//                   )
-//                 )}
-//             </select>
-//           </div>
-
-//           <button className="interpret-button">Perform Interpretation</button>
-//         </div>
-
-//         {/* Table Section */}
-//         <table className="data-table">
-//           <thead>
-//             <tr>
-//               <th>Title</th>
-//               <th>Rules</th>
-//               <th>Interpretations</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             <tr>
-//               <td>{selectedReturn}</td>
-//               <td>{selectedSchedule}</td>
-//               <td>{selectedItem}</td>
-//             </tr>
-//           </tbody>
-//         </table>
-//       </div>
-//     </div>
-//   );
-// }
- 
-// export default App;
-
-
-
 import React, { useState, useEffect } from "react";
 import "./App.css";
-
-// const data = {
-//   "COR001 Own Funds": {
-//     schedules: {
-//       "C 02.00 - CREDIT AND COUNTERPARTY CREDIT RISK": [
-//         "Exposure in default subject to the support of 1075%-1520%",
-//       ],
-//     },
-//   },
-//   "COR002 Market Risk": {
-//     schedules: {
-//       "C 03.00 - Market Risk": [
-//         "Market exposure subject to support of 500%-1000%",
-//       ],
-//     },
-//   },
-// };
 
 const  data = {
   "COR001 Own Funds": {
     "schedules": {
-      "Index - Schedule": ["Dummy data for Index - Schedule"],
       "1 - Schedule": ["Dummy data for 1 - Schedule"],
       "2 - Schedule": ["Dummy data for 2 - Schedule"],
       "3 - Schedule": ["Dummy data for 3 - Schedule"],
@@ -329,7 +184,8 @@ function App() {
   const [tableData, setTableData] = useState([]); // Stores table data
   const [interpretation, setInterpretation] = useState("");
   const [isInterpreting, setIsInterpreting] = useState(false);
-  const [articles, setArticles] = useState("");
+  const [articles, setArticles] = useState([]);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   async function getInterpretation(selectedItem) {
     await fetch(`http://127.0.0.1:8000/process?input_value=${selectedItem}`, {
@@ -343,18 +199,23 @@ function App() {
       })
       .then((data) => {
         setInterpretation(data.output);
-        setArticles(data.articles);
+        setArticles(data.articles || []);
         console.log(data.output);
       });
   }
 useEffect(() => {
     if (isInterpreting) {
-      const updatedSchedule = `${selectedReturn} ${selectedSchedule} ${selectedItem}`;
+      const updatedSchedule = `${selectedReturn} || ${selectedSchedule} || ${selectedItem}`;
       setTableData((prevData) => [
         ...prevData,
-        { returnId: updatedSchedule, schedule: articles, item: interpretation },
+        { 
+          returnId: updatedSchedule, 
+          schedule: articles, // Join articles with newline
+          item: interpretation 
+        },
       ]);
       setIsInterpreting(false);
+      setIsLoading(false);
     }
   }, [interpretation,articles]);
   // When Return is selected, auto-update Schedule & Item
@@ -362,20 +223,10 @@ useEffect(() => {
     const newReturn = event.target.value;
     setSelectedReturn(newReturn);
 
-    if (newReturn) {
-      const firstSchedule = Object.keys(data[newReturn].schedules)[0] || "";
-      setSelectedSchedule(firstSchedule);
-
-      if (firstSchedule) {
-        const firstItem = data[newReturn].schedules[firstSchedule][0] || "";
-        setSelectedItem(firstItem);
-      } else {
-        setSelectedItem("");
-      }
-    } else {
+    
       setSelectedSchedule("");
       setSelectedItem("");
-    }
+    
   };
 
   // When Schedule is selected, auto-update Item
@@ -384,9 +235,7 @@ useEffect(() => {
     setSelectedSchedule(newSchedule);
 
     if (selectedReturn && newSchedule) {
-      const firstItem = data[selectedReturn].schedules[newSchedule][0] || "";
-      setSelectedItem(firstItem);
-    } else {
+     
       setSelectedItem("");
     }
   };
@@ -396,6 +245,7 @@ useEffect(() => {
   const handlePerformInterpretation = async () => {
     if (selectedReturn && selectedSchedule && selectedItem) {
       setIsInterpreting(true);
+      setIsLoading(true); // Start loading
       await getInterpretation(selectedItem);
     }
   };
@@ -403,13 +253,13 @@ useEffect(() => {
     <div className="container">
       {/* Sidebar */}
       <div className="sidebar">
-        <div className="logo">Logo</div>
-        <div className="bank-name">Bank Name</div>
+        <div className="bank-name"><img src="https://www.hsbc.co.in/content/dam/hsbc/in/images/01_HSBC_MASTERBRAND_LOGO_RGB.svg" alt="HSBC India Bank" /></div>
+        
       </div>
 
-      {/* Main Content */}
+      {/* Main</div> Content */}
       <div className="main">
-        <h2 className="header">Custom Website Header</h2>
+        <h2 className="header">PRA Rulebook</h2>
 
         {/* Dropdown Section */}
         <div className="dropdown-section">
@@ -471,21 +321,23 @@ useEffect(() => {
         </div>
 
         {/* Table Section */}
-        <table className="data-table">
+        {isLoading ? (
+          <div className="loading">Generating Interpretation...</div>
+        )  : (<table className="data-table">
           <thead>
             <tr>
-              <th>Title - Schedule - Item</th>
+              <th>Title || Schedule || Item</th>
               <th>Articles</th>
-              <th>Interpretations</th>
+              <th>Interpretation</th>
             </tr>
           </thead>
           <tbody>
             {tableData.length > 0 ? (
               tableData.map((row, index) => (
                 <tr key={index}>
-                  <td>{row.returnId}</td>
-                  <td>{row.schedule}</td>
-                  <td>{row.item}</td>
+                  <td className="tsi">{row.returnId}</td>
+                  <td className="article">{row.schedule}</td>
+                  <td className="interpretation">{row.item}</td>
                 </tr>
               ))
             ) : (
@@ -495,6 +347,8 @@ useEffect(() => {
             )}
           </tbody>
         </table>
+      )}
+        
       </div>
     </div>
   );

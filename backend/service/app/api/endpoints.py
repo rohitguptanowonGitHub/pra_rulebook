@@ -96,6 +96,6 @@ async def process_input(input_value: str):
 
         result = llm_call(final_page_content,final_sys_msg)
 
-        return {"output": result}
+        return {"output": result, "articles":articles}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
