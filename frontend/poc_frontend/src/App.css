@@ -1,0 +1,79 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  text-align: center;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.bank-name {
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.dropdown-section {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dropdown label {
+  font-size: 14px;
+  display: block;
+}
+
+.dropdown select {
+  padding: 5px;
+  width: 200px;
+}
+
+.interpret-button {
+  background-color: yellow;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.data-table th, .data-table td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: center;
+}
+
+.data-table th {
+  background-color: #ddd;
+}
