@@ -28,16 +28,26 @@ async def process_input(input_value: str):
         q_embedding = embed_query_chunk(input_value)
         page_content = vector_search(q_embedding,chunks,"csai")
         articles = llm_call(page_content,sys_msg)
+        # Extract substring between "|"
+        start = page_content.find("|") + 1
+        end = page_content.rfind("|")
+        if start > 0 and end > start:
+            warning = page_content[start:end]
+        warning = "Warning: "+warning
 
         #Get Article Definition
-        if articles:
-            article_def = articles[0]
+        article_list = eval(articles)
+        if article_list[0]!="":
+            article_def = article_list[0]
         else:
-            article_def = ""
-        file_path1 = os.path.join(os.getenv('PYTHONPATH'), 'app', 'dependencies', 'rulebook_tables.csv')
+            articles = "NA"
+            result= "Interpretation not applicable"
+            warning = ""
+
+        file_path1 = os.path.join(os.getenv('PYTHONPATH'), 'app', 'dependencies', "chunks_rulebook.csv")
         chunks1 = get_chunks(file_path1)
         q_embedding1 = embed_query_chunk(article_def)
-        page_content1 = vector_search(q_embedding1,chunks1,"prarulebook")
+        page_content1 = vector_search(q_embedding1,chunks1,"regulation")
 
         #Get QnA
         file_path2 = os.path.join(os.getenv('PYTHONPATH'), 'app', 'dependencies', 'qna_tables.csv')
@@ -96,6 +106,6 @@ async def process_input(input_value: str):
 
         result = llm_call(final_page_content,final_sys_msg)
 
-        return {"output": result, "articles":articles}
+        return {"output": result, "articles":articles, "warning":warning}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
