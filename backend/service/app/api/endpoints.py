@@ -23,19 +23,19 @@ async def process_input(input_value: str):
 
         #Article Search
         file_path = os.path.join(os.getenv('PYTHONPATH'), 'app', 'dependencies', 'extracted_tables.csv')
-        sys_msg  = "Extract only the Articles mentioned in the given text as a Python list, without any additional text or explanation. And if no Articles are present then give a blank value with no text. Append the word Articles in front if the list item doesnt have it. Also only extract the article which is relevant to 0282 and ignore the text which comes before it."       
+        sys_msg  = "Extract only the Articles mentioned in the given text along with their corresponding Point references as a Python list. Include references such as 'Point (x) of Article 12 CRR'. If an Article is mentioned without a Point reference, include only the Article. If no Articles are present, check for references in parentheses. If still no Articles are found, return a blank list with no additional text. Ensure each list item starts with 'Article' if it is missing."
         chunks = get_chunks(file_path)
         q_embedding = embed_query_chunk(input_value)
         page_content = vector_search(q_embedding,chunks,"csai")
         articles = llm_call(page_content,sys_msg)
-        #print(articles)
-        
+        print(articles)
+        print(page_content)
         # Extract substring between "|"
         start = page_content.find("|") + 1
         end = page_content.rfind("|")
         if start > 0 and end > start:
             warning = page_content[start:end]
-        warning = "Warning: "+ warning
+        warning = "Article Reference: "+ warning
         #Get Article Definition
         article_list = eval(articles)
               
@@ -53,59 +53,45 @@ async def process_input(input_value: str):
             page_content2 = vector_search(q_embedding2,chunks2,"qna")
                 
             #Final LLM Call
-            final_sys_msg = """You are Subject Matter Expert that helps in creation of an interpretation in the bullet points on the basis of relevant information below.  
-                                    Title : Exposures in default subject to a risk weight of 150%, Article : UK CRR Art. 112 (j), 
-                                    Question : 1/ For lines 290 and 310, are the columns "215" and "220" matching the exposures’ 
-                                                weighted amounts if they were not secured by a mortgage or is it necessary to declare the same weighted amounts 
-                                                shown in line 010 classified according to the category of the exposure’s original counterpart. 
-                                                2/ For lines 300 and 320, is the column "215" matching the exposures’ weighted amounts if they were not in
-                                                default or is it necessary to declare the same weighted amounts shown in line 010 classified according to the category of the
-                                                exposure’s original counterpart. 3/ Lines 300 and 320 of the CR SA’ state
-                                                concern defaulted exposures for which categories before being in default
-                                                were as such: - Central governments and central banks - Regional and local
-                                                administrations - Public Sector Entities - Institutions that are not subjected
-                                                to an evaluation of short-term credit - Businesses/Corporates that are not the
-                                                subjected to an evaluation of short-term credit - Retail (customers ) Can you
-                                                confirm that defaulted exposures secured by a mortgage are not affected by
-                                                lines 300 and 320 of the CR SA state? However, they will be reported in the
-                                                column "020" of the line 90 of the CR GB 1 state.
-                                    Final Answer : Rows from 290 to 320 of template C 07.00 of Regulation (EU) No 680/2014
-                                                13 ITS on Supervisory Reporting of institutions (ITS) are memorandum items
-                                                and affect neither the calculation of the risk weighted exposure amounts of
-                                                the exposure classes according to Article 112 points a) to c) and f) to h) of
-                                                the Regulation (EU) No. 575/2013 (CRR) nor of the exposure classes
-                                                according to Article 112 points i) and j) of CRR reported in CR SA (please see
-                                                Annex II, paragraph 55 of the ITS). In addition paragraph 56 points out, that
-                                                the memorandum items provide additional information about the obligor
-                                                structure of the exposure classes 'in default' and 'secured by immovable
-                                                property'. Therefore the figures reported in all the columns of C 07.00 are
-                                                filled considering the default status (rows 300 and 320) or immovable
-                                                property collateral (rows 290 and 310). It implies that:
-                                                1. Question 1 13 with regard to rows 290 and 310, columns 215 and 220
-                                                include RWAs calculated according to Article 124 - 126 CRR;
-                                                2. Question 2 13 with regard to rows 300 and 320, columns 215 includes
-                                                RWAs calculated according to Art. 127 CRR.
-                                                With reference to question 3, where an exposure secured by mortgages on a
-                                                real estate (commercial or residential) is in default, it is included in rows 300
-                                                or 320 of template C 07.00. With regard to the C 09.01 template, according
-                                                to the instructions of row 100 of Annex II the original exposure pre
-                                                conversion factor linked to a defaulted exposure is reported in cell (r100;
-                                                c010) as well as in cell (r090; c020) as clarified in Q&A 2013_347.
-                                    Refer the below Interpretation and always create it in similar way as per the content provided above.
-                                    Interpretation  : This memorandum item is populated for ‘Central governments or central banks’, 
-                                                    ‘Regional governments or local authorities’, ‘Public sector entities’, ‘Institutions’, ‘Corporates’, and ‘Retail’ when:
-                                                    1)  Exposure is default. 
-                                                    2) RW is 150%"""
+            final_sys_msg = """Context: You are an AI financial regulator modeled after a seasoned expert in the field of banking and finance. Your expertise encompasses a deep understanding of the European Banking Authority (EBA) regulations and the Prudential Regulation Authority (PRA) rules. Your role involves analyzing complex regulatory texts and providing interpretations that are both accurate and comprehensible to a diverse audience, including financial institutions, compliance officers, and other stakeholders within the banking sector.
+ 
+As a regulator, you are expected to navigate through intricate legal frameworks and offer guidance that helps stakeholders comply with regulatory requirements. Your interpretations must be grounded in the legal text but also practical, taking into account real-world applications of these rules. You are adept at identifying the essence of regulatory provisions and translating them into plain language without losing the nuance of the original text.
+ 
+Task: Provide interpretations of specific regulatory items from the PRA rulebook. Your interpretations should be concise, jargon-free, and follow a structured format for ease of understanding.
+ 
+Example Format:
+Interpretation: '[Your interpretation here]'
+ 
+Instructions:
+1. Use the 'regulation rules' from the PRA rulebook as your primary source of information.
+2. Refer to the 'eba qna data' only for additional context or clarification when necessary.
+3. Avoid using technical jargon, row references, or line references in your interpretations.
+4. Present your interpretation in a logical sequence that is easy to follow.
+5. Adhere to any explicit rules or exceptions mentioned in the 'Warnings' section.
+6. Ensure that your interpretation is compliant with both the letter and the spirit of the regulations.
+7. The output should only consists of clear and concise and short points like '1.', '2.' etc and not paragragh, each point should be very short but shouldnt lose the context and add '\n' after end of each point.  
+ 
+Data Sources:
+- Item value:'[Reference should be taken from the key "Title" in the user query]'
+- Regulation Rules: '[Take this value from the key "Article" in the user query]'
+- EBA Q&A Details: '[Take this value from the key "Reference QnA" in the user query]'
+- Warnings: '[Take this value from the key "Article defination" in the user query]'
+ 
+ 
+Your Interpretation*:
+- Interpretation: '[Provide your interpretation here, ensuring it is clear and adheres to the instructions above]"""
                 
 
 
             final_page_content = f"Title : {input_value}, Article : {article_def}, Article Definition : {page_content1}, Reference QnA : {page_content2} and give Interpretation in the similar format as provided in the system message. The Interpretation should be easy to understand by a layman and should be well structured. Remove references of any articles in the response."
 
             result = llm_call(final_page_content,final_sys_msg)
+            articles = "\n".join(article_list)
+            print(articles)
 
         else:
                 articles = "NA" 
-                result= "Interpretation not applicable"
+                result = "Interpretation not applicable"
                 warning = ""
 
 
