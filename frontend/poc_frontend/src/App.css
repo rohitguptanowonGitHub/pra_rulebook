@@ -86,17 +86,44 @@ body {
 .data-table th {
   background-color: #ddd;
 }
-.tsi {
- width: 35%;
+.title {
+ width: 10%;
 }
+
+.item {
+  width: 10%;
+ }
+ 
+.schedule {
+  width: 10%;
+ }
 .articles{
-  width: 15%;
+  width: 10%;
+  color: blue
 }
 .interpretation{
-  width: 50%;
+  width: 60%;
+  
+}
+.interpretation-content{
+  width: 60%;
+  color: forestgreen;
+  text-align: justify;
+}
+.articles-h{
+  width: 10%;
+  
+}
+.interpretation-h{
+  width: 60%;
 }
 .loading {
   text-align: center;
   margin-top: 100px;
   font-size: xx-large;
+}
+.warning {
+  text-align: justify;
+  margin-top: 20px;
+  color: red;
 }
