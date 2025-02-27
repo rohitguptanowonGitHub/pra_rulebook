@@ -61,11 +61,11 @@ body {
 }
 
 .interpret-button {
-  background-color: #db0011;
+  background-color: #ffe600;
   border: none;
   cursor: pointer;
   font-weight: bold;
-  color: white;
+  color: #000;
   width: 250px;
   height: 40px;
   border-radius: 10px;
@@ -98,24 +98,24 @@ body {
   width: 10%;
  }
 .articles{
-  width: 10%;
-  color: blue
+  width: 20%;
+  color: blue;
+  white-space: pre-line;
 }
 .interpretation{
-  width: 60%;
-  
+  width: 50%;
 }
 .interpretation-content{
-  width: 60%;
+  width: 50%;
   color: forestgreen;
   text-align: justify;
+  white-space: pre-line;
 }
 .articles-h{
   width: 10%;
-  
 }
 .interpretation-h{
-  width: 60%;
+  width: 50%;
 }
 .loading {
   text-align: center;
@@ -123,7 +123,7 @@ body {
   font-size: xx-large;
 }
 .warning {
-  text-align: justify;
+  text-align: left;
   margin-top: 20px;
   color: red;
 }
