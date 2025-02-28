@@ -1,10 +1,10 @@
 {
     "version": 2,
     "builds": [
-      { "src": "/service/main.py", "use": "@vercel/python" }
+      { "src": "/service/app/main.py", "use": "@vercel/python" }
     ],
     "routes": [
-      { "src": "/(.*)", "dest": "/service/main.py" }
+      { "src": "/(.*)", "dest": "/service/app/main.py" }
     ]
   }
   
