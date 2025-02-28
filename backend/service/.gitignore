@@ -21,3 +21,10 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+#cache
+/__pycache__
+
+# local env files
+service/.env
+service/app/api/__pycache__/*

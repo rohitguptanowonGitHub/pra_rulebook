@@ -6,22 +6,27 @@ from langchain.schema import SystemMessage
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
 from app.models.LLMChatClient import LLMChatClient
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Initialize Azure OpenAI
+openai_api_type_local =  os.getenv("OPENAI_API_TYPE_LOCAL")
+openai_api_base_local = os.getenv("OPENAI_API_BASE_LOCAL")
+openai_api_version_local = os.getenv("OPENAI_API_VERSION_LOCAL")
+openai_api_key_local = os.getenv("OPENAI_API_KEY_LOCAL")
+pinecone_api_key = os.getenv("PINECONE_API_KEY")
 
-openai_api_type_local = ""
-openai_api_base_local = ""
-openai_api_version_local = ""
-openai_api_key_local = ""
-pinecone_api_key = ""
- 
+
 # Initialize Pinecone & Azure OpenAI
 pc = Pinecone(api_key=pinecone_api_key, ssl_verify=False)
 client = AzureOpenAI(api_key=openai_api_key_local, api_version=openai_api_version_local, azure_endpoint=openai_api_base_local)
 
 my_llm = AzureChatOpenAI(
-    deployment_name="gpt-4",
-    model_name="gpt-4",
+    deployment_name=os.getenv("MODEL_NAME"),
+    model_name=os.getenv("MODEL_NAME"),
     openai_api_key=openai_api_key_local,
     openai_api_type=openai_api_type_local,
     openai_api_version=openai_api_version_local,
@@ -48,7 +53,7 @@ def get_chunks(file_path):
     return chunks
 
 def embed_query_chunk(query):
-    response = client.embeddings.create(input=query, model="text-embedding-ada-002")
+    response = client.embeddings.create(input=query, model=os.getenv("EMBEDDING_MODEL_NAME"))
     embedding = response.data[0].embedding
     # Ensure embeddings are 1536-dimensional
     if len(embedding) != 1536:
