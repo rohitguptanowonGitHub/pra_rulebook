@@ -188,6 +188,8 @@ function App() {
   const [interpretation, setInterpretation] = useState("");
   const [isInterpreting, setIsInterpreting] = useState(false);
   const [articles, setArticles] = useState("");
+  const [articlesTitle, setArticlesTitle] = useState("");
+  const [qnalist, setQnalist] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const [warning, setWarning] = useState("");
   
@@ -204,7 +206,9 @@ function App() {
       .then((data) => {
         setInterpretation(data.output);
         setArticles(data.articles);
-        setWarning(data.warning)
+        setWarning(data.warning);
+        setArticlesTitle(data.additional_articles);
+        setQnalist(data.qna_refs);
         console.log(data);
       });
   }
@@ -218,13 +222,15 @@ useEffect(() => {
           item: selectedItem,
           articles: articles,
           interpretation: interpretation,
-          warning : warning
+          warning : warning,
+          qna : qnalist,
+          articlestitle : articlesTitle,
         },
       ]);
       setIsInterpreting(false);
       setIsLoading(false);
     }
-  }, [interpretation,articles,warning]);
+  }, [interpretation,articles,warning, qnalist, articlesTitle ]);
   // When Return is selected, auto-update Schedule & Item
   const handleReturnChange = (event) => {
     const newReturn = event.target.value;
@@ -347,6 +353,7 @@ useEffect(() => {
               <th className = "schedule">Schedule</th>
               <th className = "item">Item</th>
               <th className = "articles-h">Articles</th>
+              <th className = "qna-h">EBA QnA Reference</th>
               <th className = "interpretation-h ">Interpretation</th>
             </tr>
           </thead>
@@ -357,16 +364,21 @@ useEffect(() => {
                   <td className="title">{row.returnId}</td>
                   <td className="schedule">{row.schedule}</td>
                   <td className="item">{row.item}</td>
-                  <td className="articles">{row.articles}</td>
-
-
-                  
-                  <td className="interpretation"><tr className="interpretation-content">{row.interpretation}</tr><tr className="warning" >{row.warning}</tr></td>
+                  <td className="articles">
+                    <tr><b>Annex 2 Ref : </b></tr>
+                    <tr>{row.articles}</tr>
+                    
+                    <tr><br></br><b>Rulebook Ref  : </b><br></br></tr>
+                   
+                    <tr>{row.articlestitle}</tr>
+                  </td>
+                  <td className="qna">{row.qna}</td>
+                  <td className="interpretation"><tr className="interpretation-content">{row.interpretation}</tr><br></br><tr className="warning" ><b>Article Reference: </b><em>{row.warning}</em></tr></td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="5">No data selected yet.</td>
+                <td colSpan="6">No data selected yet.</td>
               </tr>
             )}
           </tbody>

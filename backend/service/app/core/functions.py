@@ -6,8 +6,10 @@ from langchain.schema import SystemMessage
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
 from app.models.LLMChatClient import LLMChatClient
+from pinecone_text.sparse import BM25Encoder
 from dotenv import load_dotenv
 import os
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -23,6 +25,7 @@ pinecone_api_key = os.getenv("PINECONE_API_KEY")
 # Initialize Pinecone & Azure OpenAI
 pc = Pinecone(api_key=pinecone_api_key, ssl_verify=False)
 client = AzureOpenAI(api_key=openai_api_key_local, api_version=openai_api_version_local, azure_endpoint=openai_api_base_local)
+
 
 my_llm = AzureChatOpenAI(
     deployment_name=os.getenv("MODEL_NAME"),
@@ -47,10 +50,14 @@ def generate_text_blob(value: str) -> str:
     analysis = analyze_data(value)
     return f"Processed Value: {processed}\n{analysis}"
 
-def get_chunks(file_path):
+def get_chunks(file_path, hybrid = False):
+    encoder = None
     df = pd.read_csv(file_path)
     chunks = df.apply(lambda row: "|".join(map(str, row)), axis=1).tolist()
-    return chunks
+    if hybrid:
+        encoder = BM25Encoder()
+        encoder.fit(chunks)
+    return chunks, encoder
 
 def embed_query_chunk(query):
     response = client.embeddings.create(input=query, model=os.getenv("EMBEDDING_MODEL_NAME"))
@@ -84,3 +91,25 @@ def llm_call(content,sys_msg):
     lc = LLMChatClient(chain, content=content)
     response = lc.get_response()
     return response
+
+def embed_sparse_query_chunk(query, encoder):
+    sparse_query = encoder.encode_queries([query])[0]
+    return sparse_query
+
+def hybrid_search(q_embedding, s_q_embedding, index_name):
+    #Index
+    index = pc.Index(index_name)
+
+    # Perform Hybrid Search (Dense + Sparse)
+    results = index.query(
+        vector=q_embedding,
+        sparse_vector=s_q_embedding,
+        top_k=1,
+        include_metadata=True
+    )
+    
+   # Check if results contain matches
+    if not results['matches']:
+        return ""
+    else:
+        return results['matches'][0]
