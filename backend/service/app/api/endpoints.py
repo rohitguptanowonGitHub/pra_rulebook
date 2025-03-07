@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 import nltk
 
-from app.core.functions import get_chunks, embed_query_chunk, vector_search, llm_call, embed_sparse_query_chunk, hybrid_search
+from app.core.functions import get_chunks, embed_query_chunk, vector_search, llm_call, embed_sparse_query_chunk, hybrid_search, map_reduce_summarize
 import warnings
 nltk.download('punkt')
 warnings.filterwarnings("ignore")
@@ -79,16 +79,25 @@ async def process_input(input_value: str):
             _, qna_bm25_encoder = get_chunks(qna_file_path, True)
             qna_embedding_title = embed_query_chunk(article_def)
             s_qna_embedding_title = embed_sparse_query_chunk(article_def, qna_bm25_encoder)
-            page_content2 = hybrid_search(qna_embedding_title, s_qna_embedding_title, os.getenv('QNA_INDEX'))
+            page_content2 = hybrid_search(qna_embedding_title, s_qna_embedding_title, os.getenv('QNA_INDEX'),3)
             #print(f'PRA Rulebook - Title: {relevant_chunk_title}')
-            print(page_content2)
-
+            #print(len(page_content2))
+        
             
             #Get the QnA ref from page_content2 chunk
-            sys_msg = "Extract only the Question ID mentioned in the given text as a Python list. If no Question ID is present then return a blank list with no additional text. Ensure each list item starts with 'Question ID' if it is missing."
-            qna_ref_list = llm_call(page_content2,sys_msg)
-            print(qna_ref_list)
+            qna_ref_list = []
+            sys_msg = "Extract only the Question ID mentioned in the given text. If no Question ID is present then return a blank value with no additional text. Ensure that output has text 'Question_ID' not 'Question ID' appended in prefix if it is missing. "
+            for qa in page_content2:
+                qna_ref = llm_call(qa,sys_msg)
+                print(qna_ref)
+                qna_ref_list.append(qna_ref)
+            # Remove duplicates from qna_ref_list
+            qna_ref_list = list(set(qna_ref_list))
+            print(f'QnA Ref: {qna_ref_list}')
 
+            #Summarize the QnA using Langchain Map Reduce
+            qna_summary = map_reduce_summarize(page_content2)
+            
             #Final LLM Call
             final_sys_msg = """Context: You are an AI financial regulator modeled after a seasoned expert in the field of banking and finance. Your expertise encompasses a deep understanding of the European Banking Authority (EBA) regulations and the Prudential Regulation Authority (PRA) rules. Your role involves analyzing complex regulatory texts and providing interpretations that are both accurate and comprehensible to a diverse audience, including financial institutions, compliance officers, and other stakeholders within the banking sector.
  
@@ -124,12 +133,12 @@ async def process_input(input_value: str):
                 
 
 
-            final_page_content = f"Title : {input_value}, Article : {article_def}, Article Definition : {page_content1}, Article Reference as per Title : {relevant_chunk_title},  Reference QnA : {page_content2} and give Interpretation in the similar format as provided in the system message. The Interpretation should be easy to understand by a layman and should be well structured. Remove references of any articles in the response."
+            final_page_content = f"Title : {input_value}, Article : {article_def}, Article Definition : {page_content1}, Article Reference as per Title : {relevant_chunk_title},  Reference QnA : {qna_summary} and give Interpretation in the similar format as provided in the system message. The Interpretation should be easy to understand by a layman and should be well structured. Remove references of any articles in the response."
 
             result = llm_call(final_page_content,final_sys_msg)
             articles = "\n".join(article_list)
             addnl_articles = "\n".join(addnl_articles_list)
-            qna_ref_list = "\n".join(eval(qna_ref_list))
+            qna_ref_list = "\n".join(qna_ref_list)
 
         else:
                 articles = "NA" 

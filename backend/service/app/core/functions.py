@@ -7,6 +7,9 @@ from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
 from app.models.LLMChatClient import LLMChatClient
 from pinecone_text.sparse import BM25Encoder
+from langchain.chains.summarize import load_summarize_chain
+from langchain.schema import Document
+
 from dotenv import load_dotenv
 import os
 
@@ -96,7 +99,7 @@ def embed_sparse_query_chunk(query, encoder):
     sparse_query = encoder.encode_queries([query])[0]
     return sparse_query
 
-def hybrid_search(q_embedding, s_q_embedding, index_name):
+def hybrid_search(q_embedding, s_q_embedding, index_name, top_k=1):
     #Index
     index = pc.Index(index_name)
 
@@ -104,12 +107,22 @@ def hybrid_search(q_embedding, s_q_embedding, index_name):
     results = index.query(
         vector=q_embedding,
         sparse_vector=s_q_embedding,
-        top_k=1,
+        top_k=top_k,
         include_metadata=True
     )
-    
+    text_array = []
    # Check if results contain matches
     if not results['matches']:
-        return ""
+        return text_array
     else:
-        return results['matches'][0]
+        for match in results["matches"]:
+            text = match['metadata']['text']
+            text_array.append(text)
+    return text_array
+
+def map_reduce_summarize(sub_chunks):
+
+    docs = [Document(page_content=t) for t in sub_chunks]
+    summary_chain = load_summarize_chain(my_llm, chain_type="map_reduce")
+    summary = summary_chain.run(docs)
+    return summary
