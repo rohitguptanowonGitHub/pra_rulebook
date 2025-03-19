@@ -5,15 +5,15 @@ from fastapi.middleware.cors import CORSMiddleware
 # Load environment variables from .env file
 load_dotenv()
 # Add the root directory of your project to the PYTHONPATH
-sys.path.append(os.getenv('PYTHONPATH'))
+#sys.path.append(os.getenv('PYTHONPATH'))
 
 
 
 from fastapi import FastAPI
-from app.api.endpoints import router as api_router
+from .api.endpoints import router as api_router
 
 
-
+ 
 app = FastAPI()
 app.add_middleware(     CORSMiddleware,     allow_origins=["*"],     allow_credentials=True,     allow_methods=["GET", "POST", "PUT", "DELETE"],     allow_headers=["*"], )
 

@@ -14,7 +14,7 @@ import os
 load_dotenv()
 
 # Add the root directory of your project to the PYTHONPATH
-sys.path.append(os.getenv('PYTHONPATH'))
+#sys.path.append(os.getenv('PYTHONPATH'))
 
 
 router = APIRouter()
@@ -24,7 +24,8 @@ async def process_input(input_value: str):
     try:
         print(f"input_value: {input_value}")
         #Article Search
-        file_path = os.path.join(os.getenv('PYTHONPATH'), 'app', 'dependencies', 'extracted_tables.csv')
+        #file_path = os.path.join(os.getenv('PYTHONPATH'), 'app', 'dependencies', 'extracted_tables.csv')
+        file_path = os.path.join(os.path.dirname(__file__), '..', 'dependencies', 'extracted_tables.csv')
         sys_msg  = "Extract only the Articles mentioned in the given text along with their corresponding Point references as a Python list. Include references such as 'Point (x) of Article 12 CRR'. If an Article is mentioned without a Point reference, include only the Article. If no Articles are present, check for references in parentheses. If still no Articles are found, return a blank list with no additional text. Ensure each list item starts with 'Article' if it is missing."
         chunks, _ = get_chunks(file_path)
         q_embedding = embed_query_chunk(input_value)
@@ -48,7 +49,8 @@ async def process_input(input_value: str):
             # q_embedding1 = embed_query_chunk(article_def)
             # page_content1 = vector_search(q_embedding1,chunks1,os.getenv('RULEBOOK_INDEX'))
             
-            file_path1 = os.path.join(os.getenv('PYTHONPATH'), 'app', 'dependencies', "pra_regulation_s7.csv")
+            #file_path1 = os.path.join(os.getenv('PYTHONPATH'), 'app', 'dependencies', "pra_regulation_s7.csv")
+            file_path1 = os.path.join(os.path.dirname(__file__), '..', 'dependencies', "pra_regulation_s7.csv")
             
             _, bm25_encoder = get_chunks(file_path1, True)
             q_embedding1 = embed_query_chunk(article_def)
@@ -75,7 +77,8 @@ async def process_input(input_value: str):
             # page_content2 = vector_search(q_embedding2,chunks2,os.getenv('QNA_INDEX'))
 
             #Get QnA using Hybrid Search
-            qna_file_path = os.path.join(os.getenv('PYTHONPATH'), 'app', 'dependencies', 'qna_tables_v2.csv')
+            #qna_file_path = os.path.join(os.getenv('PYTHONPATH'), 'app', 'dependencies', 'qna_tables_v2.csv')
+            qna_file_path = os.path.join(os.path.dirname(__file__), '..','dependencies', 'qna_tables_v2.csv')
             _, qna_bm25_encoder = get_chunks(qna_file_path, True)
             qna_embedding_title = embed_query_chunk(article_def)
             s_qna_embedding_title = embed_sparse_query_chunk(article_def, qna_bm25_encoder)

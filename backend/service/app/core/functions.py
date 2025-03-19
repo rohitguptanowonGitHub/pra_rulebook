@@ -15,7 +15,7 @@ import os
 
 
 # Load environment variables from .env file
-load_dotenv()
+#load_dotenv()
 
 # Initialize Azure OpenAI
 openai_api_type_local =  os.getenv("OPENAI_API_TYPE_LOCAL")
