@@ -22,7 +22,7 @@ router = APIRouter()
 @router.post("/process")
 async def process_input(input_value: str):
     try:
-
+        print(f"input_value: {input_value}")
         #Article Search
         file_path = os.path.join(os.getenv('PYTHONPATH'), 'app', 'dependencies', 'extracted_tables.csv')
         sys_msg  = "Extract only the Articles mentioned in the given text along with their corresponding Point references as a Python list. Include references such as 'Point (x) of Article 12 CRR'. If an Article is mentioned without a Point reference, include only the Article. If no Articles are present, check for references in parentheses. If still no Articles are found, return a blank list with no additional text. Ensure each list item starts with 'Article' if it is missing."
@@ -112,13 +112,14 @@ async def process_input(input_value: str):
                             1. Use the 'regulation rules' from the PRA rulebook as your primary source of information. Make use of Article Definition and Article Reference as per Title for additional context.
                             2. Refer to the 'eba qna data' only for additional context or clarification when necessary.
                             3. Avoid using technical jargon, row references, or line references in your interpretations.
-                            4. Present your interpretation in a logical sequence that is easy to follow.
+                            4. Present your interpretation in a logical sequence that is easy to follow in a professional tone.
                             5. Adhere to any explicit rules or exceptions mentioned in the 'Warnings' section.
                             6. Ensure that your interpretation is compliant with both the letter and the spirit of the regulations.
                             7. The output should only consists of clear and concise and short points like '1.', '2.' etc and not paragragh, each point should be very short but shouldnt lose the context and add '\n' after end of each point.  
                             8. The interpretation should first focus on the regulations rules and not the entire text. Then it should relate that to EBA Q&A details only for any additional rule change/update. Do not use wordings from eba QnA until very explicitly required or mapped with PRA rules.  
-                            9. Do not give explanation of the title which we are providing, just give the interpretation using the regulations rules.
-                        
+                            9. Do not give explanation of the title which we are providing, just give the interpretation using the regulations rules. Also, do not provide definitions of terminologies which might be present in the article definition and QnA references.
+                            10. Donot include any warnings, comments, disclaimers or safeguarding statements in the interpretation result. It is very important you only provide the final output without any additional comments or remarks.
+
  
                             
                             Data Sources:
@@ -139,6 +140,7 @@ async def process_input(input_value: str):
             articles = "\n".join(article_list)
             addnl_articles = "\n".join(addnl_articles_list)
             qna_ref_list = "\n".join(qna_ref_list)
+            result = result.replace("Interpretation:","")
 
         else:
                 articles = "NA" 

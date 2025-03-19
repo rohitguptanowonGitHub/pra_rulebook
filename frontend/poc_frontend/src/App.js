@@ -12,32 +12,46 @@ const  data = {
       "C 05.02 - GRANDFATHERED INSTRUMENTS(CA5.2)": ["Dummy data for 5.2 - Schedule"],
       "C 06.01 - GROUP SOLVENCY-TOTAL": ["Dummy data for 6.1 - Schedule"],
       "C 06.02 - GROUP SOLVENCY": ["Dummy data for 6.2 - Schedule"],
-      "C 07.00 - CR SA(CREDIT AND COUNTERPARTY CREDIT RISKS AND FREE DELIVERIES)": ["SA Exposure class",
-        "TOTAL EXPOSURES",
-        "of which: Defaulted exposures",
-        "of which: SME",
-        "of which: Exposures subject to SME-supporting factor",
-        "of which: Exposures subject to the Infrastructure supporting factor",
-        "of which: Secured by mortgages on immovable property - Residential property",
-        "of which: Exposures under the permanent partial use of the standardised approach",
-        "of which: Exposures under the standardised approach with prior supervisory permission to carry out a sequential IRB implementation",
-        "On balance sheet exposures subject to credit risk",
-        "Off balance sheet exposures subject to credit risk",
-        "Exposures / Transactions subject to counterparty credit risk",
-        "Securities Financing Transactions netting sets",
-        "of which: centrally cleared through a QCCP",
-        "Derivatives & Long Settlement Transactions netting sets",
-        "of which: centrally cleared through a QCCP",
-        "From Contractual Cross Product netting sets",
-        "0%",
-        "2%",
-        "4%","10%","20%","35%","50%","70%","75%","100%","150%","250%","370%",
-        "1 250%", "Other risk weights", "Look-through approach",
-        "Mandate-based approach", "Fall-back approach",
-        "Exposures secured by mortgages on commercial immovable property",
-        "Exposures in default subject to a risk weight of 100%",
-        "Exposures secured by mortgages on residential property",
-        "Exposures in default subject to a risk weight of 150%"],
+      "C 07.00 - CR SA(CREDIT AND COUNTERPARTY CREDIT RISKS AND FREE DELIVERIES)": [
+        { displayValue: "R0010 - TOTAL EXPOSURES", backendValue: "TOTAL EXPOSURES" },
+        { displayValue: "R0015 - of which: Defaulted exposures", backendValue: "of which: Defaulted exposures" },
+        { displayValue: "R0020 - of which: SME", backendValue: "of which: SME" },
+        { displayValue: "R0030 - of which: Exposures subject to SME-supporting factor", backendValue: "of which: Exposures subject to SME-supporting factor" },
+        { displayValue: "R0035 - of which: Exposures subject to the Infrastructure supporting factor", backendValue: "of which: Exposures subject to the Infrastructure supporting factor" },
+        { displayValue: "R0040 - of which: Secured by mortgages on immovable property - Residential property", backendValue: "of which: Secured by mortgages on immovable property - Residential property" },
+        { displayValue: "R0050 - of which: Exposures under the permanent partial use of the standardised approach", backendValue: "of which: Exposures under the permanent partial use of the standardised approach" },
+        { displayValue: "R0060 - of which: Exposures under the standardised approach with prior supervisory permission to carry out a sequential IRB implementation", backendValue: "of which: Exposures under the standardised approach with prior supervisory permission to carry out a sequential IRB implementation" },
+        { displayValue: "R0070 - On balance sheet exposures subject to credit risk", backendValue: "On balance sheet exposures subject to credit risk" },
+        { displayValue: "R0080 - Off balance sheet exposures subject to credit risk", backendValue: "Off balance sheet exposures subject to credit risk" },
+        { displayValue: "_____ - Exposures / Transactions subject to counterparty credit risk", backendValue: "Exposures / Transactions subject to counterparty credit risk" },
+        { displayValue: "R0090 - Securities Financing Transactions netting sets", backendValue: "Securities Financing Transactions netting sets" },
+        { displayValue: "R0100 - of which: centrally cleared through a QCCP", backendValue: "of which: centrally cleared through a QCCP" },
+        { displayValue: "R0110 - Derivatives & Long Settlement Transactions netting sets", backendValue: "Derivatives & Long Settlement Transactions netting sets" },
+        { displayValue: "R0120 - of which: centrally cleared through a QCCP", backendValue: "of which: centrally cleared through a QCCP" },
+        { displayValue: "R0130 - From Contractual Cross Product netting sets", backendValue: "From Contractual Cross Product netting sets" },
+        { displayValue: "R0140 - 0%", backendValue: "0%" },
+        { displayValue: "R0150 - 2%", backendValue: "2%" },
+        { displayValue: "R0160 - 4%", backendValue: "4%" },
+        { displayValue: "R0170 - 10%", backendValue: "10%" },
+        { displayValue: "R0180 - 20%", backendValue: "20%" },
+        { displayValue: "R0190 - 35%", backendValue: "35%" },
+        { displayValue: "R0200 - 50%", backendValue: "50%" },
+        { displayValue: "R0210 - 70%", backendValue: "70%" },
+        { displayValue: "R0220 - 75%", backendValue: "75%" },
+        { displayValue: "R0230 - 100%", backendValue: "100%" },
+        { displayValue: "R0240 - 150%", backendValue: "150%" },
+        { displayValue: "R0250 - 250%", backendValue: "250%" },
+        { displayValue: "R0260 - 370%", backendValue: "370%" },
+        { displayValue: "R0270 - 1 250%", backendValue: "1 250%" },
+        { displayValue: "R0280 - Other risk weights", backendValue: "Other risk weights" },
+        { displayValue: "R0281 - Look-through approach", backendValue: "Look-through approach" },
+        { displayValue: "R0282 - Mandate-based approach", backendValue: "Mandate-based approach" },
+        { displayValue: "R0283 - Fall-back approach", backendValue: "Fall-back approach" },
+        { displayValue: "R0290 - Exposures secured by mortgages on commercial immovable property", backendValue: "Exposures secured by mortgages on commercial immovable property" },
+        { displayValue: "R0300 - Exposures in default subject to a risk weight of 100%", backendValue: "Exposures in default subject to a risk weight of 100%" },
+        { displayValue: "R0310 - Exposures secured by mortgages on residential property", backendValue: "Exposures secured by mortgages on residential property" },
+        { displayValue: "R0320 - Exposures in default subject to a risk weight of 150%", backendValue: "Exposures in default subject to a risk weight of 150%" }
+      ],
       "C 08.01 - CR IRB1(CREDIT AND COUNTERPARTY CREDIT RISKS AND FREE DELIVERIES)": ["Dummy data for 8.1 - Schedule"],
       "C 08.02 - CR IRB2(CREDIT AND COUNTERPARTY CREDIT RISKS AND FREE DELIVERIES)": ["Dummy data for 8.2 - Schedule"],
       "C 08.03 - CR IRB3(CREDIT RISK AND FREE DELIVERIES)": ["Dummy data for 8.3 - Schedule"],
@@ -192,6 +206,7 @@ function App() {
   const [qnalist, setQnalist] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const [warning, setWarning] = useState("");
+  const [selectedItemDisplayValue, setSelectedItemDisplayValue] = useState("");
   
   async function getInterpretation(selectedItem) {
     await fetch(`http://127.0.0.1:8000/process?input_value=${selectedItem}`, {
@@ -219,7 +234,7 @@ useEffect(() => {
         { 
           returnId: selectedReturn, 
           schedule: selectedSchedule, // Join articles with newline
-          item: selectedItem,
+          item: selectedItemDisplayValue,
           articles: articles,
           interpretation: interpretation,
           warning : warning,
@@ -257,11 +272,24 @@ useEffect(() => {
   // Handle Table Update
   const handlePerformInterpretation = async () => {
     if (selectedReturn && selectedSchedule && selectedItem) {
+      
       setIsInterpreting(true);
       setIsLoading(true); // Start loading
       await getInterpretation(selectedItem);
+      const selectedItemDisplayValue = data[selectedReturn].schedules[selectedSchedule].find(
+        (item) => item.backendValue === selectedItem
+      )?.displayValue || selectedItem;
+      setSelectedItemDisplayValue(selectedItemDisplayValue);
+
     }
   };
+
+  const handleItemChange = (event) => {
+    console.log(event.target.value);
+    setSelectedItem(event.target.value);
+    
+  };
+
   return (
     <div className="container">
       {/* Sidebar */}
@@ -322,15 +350,15 @@ useEffect(() => {
             <label>Item Value/ ID:</label>
             <select
               value={selectedItem}
-              onChange={(e) => setSelectedItem(e.target.value)}
+              onChange={handleItemChange}
               disabled={!selectedSchedule}
             >
               <option value="">Select Item</option>
               {selectedSchedule &&
                 data[selectedReturn].schedules[selectedSchedule].map(
                   (item, index) => (
-                    <option key={index} value={item}>
-                      {item}
+                    <option key={index} value={item.backendValue}>
+                      {item.displayValue}
                     </option>
                   )
                 )}
@@ -373,7 +401,7 @@ useEffect(() => {
                     <tr>{row.articlestitle}</tr>
                   </td>
                   <td className="qna">{row.qna}</td>
-                  <td className="interpretation"><tr className="interpretation-content">{row.interpretation}</tr><br></br><tr className="warning" ><b>Article Reference: </b><em>{row.warning}</em></tr></td>
+                  <td className="interpretation"><tr className="interpretation-content"><b>Interpretation:</b> {row.interpretation}</tr><br></br><tr className="warning" ><b>Article Reference: </b><em>{row.warning}</em></tr></td>
                 </tr>
               ))
             ) : (
