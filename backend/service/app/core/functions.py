@@ -9,13 +9,7 @@ from app.models.LLMChatClient import LLMChatClient
 from pinecone_text.sparse import BM25Encoder
 from langchain.chains.summarize import load_summarize_chain
 from langchain.schema import Document
-
-from dotenv import load_dotenv
 import os
-
-
-# Load environment variables from .env file
-#load_dotenv()
 
 # Initialize Azure OpenAI
 openai_api_type_local =  os.getenv("OPENAI_API_TYPE_LOCAL")
@@ -75,8 +69,8 @@ def vector_search(q_embedding,chunks,index_val):
     query_result = index.query(vector=q_embedding, top_k=1, include_metadata=True)
     first_id = query_result['matches'][0]['id']
     print(first_id)
-    id = int(first_id)
-    page_content = chunks[id - 1]  # Subtract 1 since chunks are 0-indexed but IDs start at 1
+    chunk_id = int(first_id)
+    page_content = chunks[chunk_id - 1]  # Subtract 1 since chunks are 0-indexed but IDs start at 1
     return page_content
 
 def llm_call(content,sys_msg):

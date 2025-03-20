@@ -11,3 +11,4 @@ pinecone
 langchain_openai
 python-dotenv
 sys
+nltk

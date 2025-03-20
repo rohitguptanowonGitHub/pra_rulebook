@@ -28,3 +28,5 @@ yarn-error.log*
 # local env files
 service/.env
 service/app/api/__pycache__/*
+service/app/core/__pycache__/*
+service/app/__pycache__/*

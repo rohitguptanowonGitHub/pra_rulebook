@@ -6,12 +6,12 @@ import warnings
 nltk.download('punkt')
 warnings.filterwarnings("ignore")
 
-import sys
-from dotenv import load_dotenv
+# import sys
+# from dotenv import load_dotenv
 import os
 
 # Load environment variables from .env file
-load_dotenv()
+#load_dotenv()
 
 # Add the root directory of your project to the PYTHONPATH
 #sys.path.append(os.getenv('PYTHONPATH'))
