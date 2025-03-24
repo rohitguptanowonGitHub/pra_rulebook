@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
 import nltk
+from openai import BaseModel
 
-from app.core.functions import get_chunks, embed_query_chunk, vector_search, llm_call, embed_sparse_query_chunk, hybrid_search, map_reduce_summarize
+from app.core.functions import get_chunks, embed_query_chunk, vector_search, llm_call, embed_sparse_query_chunk, hybrid_search, map_reduce_summarize, get_chat_response
 import warnings
 nltk.download('punkt')
 warnings.filterwarnings("ignore")
@@ -15,6 +16,7 @@ import os
 
 # Add the root directory of your project to the PYTHONPATH
 #sys.path.append(os.getenv('PYTHONPATH'))
+
 
 
 router = APIRouter()
@@ -118,7 +120,7 @@ async def process_input(input_value: str):
                             4. Present your interpretation in a logical sequence that is easy to follow in a professional tone.
                             5. Adhere to any explicit rules or exceptions mentioned in the 'Warnings' section.
                             6. Ensure that your interpretation is compliant with both the letter and the spirit of the regulations.
-                            7. The output should only consists of clear and concise and short points like '1.', '2.' etc and not paragragh, each point should be very short but shouldnt lose the context and add '\n' after end of each point.  
+                            7. The output should only consists of clear and concise and short points like '1.', '2.' etc and not paragragh, each point should be very short but shouldnt lose the context and add '\n ' after end of each point.  
                             8. The interpretation should first focus on the regulations rules and not the entire text. Then it should relate that to EBA Q&A details only for any additional rule change/update. Do not use wordings from eba QnA until very explicitly required or mapped with PRA rules.  
                             9. Do not give explanation of the title which we are providing, just give the interpretation using the regulations rules. Also, do not provide definitions of terminologies which might be present in the article definition and QnA references.
                             10. Donot include any warnings, comments, disclaimers or safeguarding statements in the interpretation result. It is very important you only provide the final output without any additional comments or remarks.
@@ -144,6 +146,7 @@ async def process_input(input_value: str):
             addnl_articles = "\n".join(addnl_articles_list)
             qna_ref_list = "\n".join(qna_ref_list)
             result = result.replace("Interpretation:","")
+        
 
         else:
                 articles = "NA" 
@@ -154,5 +157,38 @@ async def process_input(input_value: str):
 
 
         return {"output": result, "articles":articles, "warning":warning, "additional_articles":addnl_articles, "qna_refs":qna_ref_list}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class UserInput(BaseModel):
+    user_prompt: str
+    
+@router.post("/aichat")
+async def process_chat_input(user_input: UserInput):
+    try:
+        print(f"input_value: {user_input.user_prompt}")
+        input_value = user_input.user_prompt
+        #AI Chat
+
+        file_path = os.path.join(os.path.dirname(__file__), '..', 'dependencies', 'pra_regulation_s7.csv')
+        chunks, _ = get_chunks(file_path)
+        q_embedding = embed_query_chunk(input_value)
+        page_content = vector_search(q_embedding,chunks,os.getenv('PRA_RULEBOOK_INDEX'))
+        print(page_content)
+
+        final_sys_msg =  """Context: You are an AI financial regulator modeled after a seasoned expert in the field of banking and finance. Your expertise encompasses a deep understanding of the European Banking Authority (EBA) regulations and the Prudential Regulation Authority (PRA) rules. Your role involves analyzing complex regulatory texts and providing interpretations that are both accurate and comprehensible to a diverse audience, including financial institutions, compliance officers, and other stakeholders within the banking sector.
+                            Provide concise replies that are polite and professional.
+                            Answer questions truthfully based on provided contextual data only.
+                            Do not answer questions that are not provided in the contextual data but if it is relevant your field of expertise then do answer based on existing knowledge. 
+                            If the question is not relevant to the field of expertise then  respond with I can only answer questions relevant to my area of expertise".  
+                            The response should be crisp and formulated in summarized manner in bulleted points.
+                            For every question answered do provide the Reference Information marked separately in the response.
+                            Contextual data:  
+        """
+
+        result = get_chat_response(input_value, final_sys_msg, page_content)
+        print(result)
+        return {"output": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

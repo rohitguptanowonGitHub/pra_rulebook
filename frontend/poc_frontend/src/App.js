@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { Button } from "@chatscope/chat-ui-kit-react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCopy } from '@fortawesome/free-regular-svg-icons';
+import {ChatBot} from "./chatbot/ChatBot";
 import "./App.css";
 
 const  data = {
@@ -207,6 +211,41 @@ function App() {
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const [warning, setWarning] = useState("");
   const [selectedItemDisplayValue, setSelectedItemDisplayValue] = useState("");
+  const [chatopen, setChatopen] = useState(false); // State to control chatbot visibility
+  const [activeButtonRB, setActiveButtonRB] = useState(true);
+  const [activeButtonCB, setActiveButtonCB] = useState(false);
+  
+  let hide = {
+    backgroundColor: '#ffe600',
+    border: '2px solid black'
+  };
+  let show = {
+    bg: '#04AA6e',
+  };
+
+
+  const btnToggle = (e) => {
+    const value = e.target.value;
+    if (value === "RuleBook Interpreter") {
+      setChatopen(false);
+      setActiveButtonRB(true);
+      setActiveButtonCB(false);
+    } else if (value === "PRA Advisor") {
+      setChatopen(true);
+      setActiveButtonRB(false);
+      setActiveButtonCB(true);
+    }
+   
+  };
+  // Function to toggle chatbot visibility
+  const toggle = (e) => {
+    if(chatopen){
+      setActiveButtonRB(true);
+      setActiveButtonCB(false);
+    }
+    setChatopen(!chatopen);
+
+  };
   
   async function getInterpretation(selectedItem) {
     await fetch(`http://127.0.0.1:8000/process?input_value=${selectedItem}`, {
@@ -290,6 +329,11 @@ useEffect(() => {
     
   };
 
+  const copyInterpretation = () => {
+    const interpretationText = document.querySelector('.ci-content')?.textContent || '';
+    navigator.clipboard.writeText(interpretationText);
+  }
+
   return (
     <div className="container">
       {/* Sidebar */}
@@ -305,12 +349,19 @@ useEffect(() => {
 </clipPath>
 </defs>
 </svg></div>
+    <div className="menu-option">
+     <Button className="menu-btn" style={activeButtonRB ? hide : show} onClick={btnToggle} value="RuleBook Interpreter"><b>RuleBook Interpreter</b></Button>
+     <Button className="menu-btn" style={activeButtonCB ? hide : show} onClick={btnToggle}  value="PRA Advisor"><b>PRA Advisor</b></Button>
+   
+    </div>
+    
         
       </div>
-
+      {/* ChatBot component with visibility controlled by chatopen state */}
+     {chatopen && <ChatBot toggle={toggle} chatopen={chatopen} />}
       {/* Main</div> Content */}
       <div className="main">
-        <h2 className="header">PRA Rulebook Interpreter</h2>
+        <div className="header"><h2 className="header-text">PRA Rulebook Interpreter</h2></div>
 
         {/* Dropdown Section */}
         <div className="dropdown-section">
@@ -372,6 +423,7 @@ useEffect(() => {
         </div>
 
         {/* Table Section */}
+        <div className="interpret-table">
         {isLoading ? (
           <div className="loading">Generating Interpretation...</div>
         )  : (<table className="data-table">
@@ -401,7 +453,12 @@ useEffect(() => {
                     <tr>{row.articlestitle}</tr>
                   </td>
                   <td className="qna">{row.qna}</td>
-                  <td className="interpretation"><tr className="interpretation-content"><b>Interpretation:</b> {row.interpretation}</tr><br></br><tr className="warning" ><b>Article Reference: </b><em>{row.warning}</em></tr></td>
+                  <td className="interpretation"><tr className="interpretation-content">
+                    <div className="i-head">
+                      <div className="i-title"><b>Interpretation:</b></div>
+                      <div className="ci-btn"><Button border icon={<FontAwesomeIcon icon={faCopy} />} onClick={copyInterpretation}></Button></div>
+                      </div>
+                      <div className="ci-content">{row.interpretation}</div> </tr><tr className="warning" ><b>Article Reference: </b><em>{row.warning}</em></tr></td>
                 </tr>
               ))
             ) : (
@@ -412,7 +469,7 @@ useEffect(() => {
           </tbody>
         </table>
       )}
-        
+        </div>
       </div>
     </div>
   );

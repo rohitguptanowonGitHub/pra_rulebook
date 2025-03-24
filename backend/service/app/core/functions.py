@@ -4,7 +4,8 @@ from openai import AzureOpenAI
 import pandas as pd
 from langchain.schema import SystemMessage
 from langchain.chains import LLMChain
-from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
+from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate, MessagesPlaceholder
+from langchain.memory import ConversationBufferMemory, FileChatMessageHistory
 from app.models.LLMChatClient import LLMChatClient
 from pinecone_text.sparse import BM25Encoder
 from langchain.chains.summarize import load_summarize_chain
@@ -120,3 +121,28 @@ def map_reduce_summarize(sub_chunks):
     summary_chain = load_summarize_chain(my_llm, chain_type="map_reduce")
     summary = summary_chain.run(docs)
     return summary
+
+def get_chat_response(user_input, system_message, relevant_chunk):
+    my_history = FileChatMessageHistory('chat_history.json')
+    my_memory = ConversationBufferMemory(
+        memory_key='chat_history',
+        chat_memory=my_history,
+        return_messages=True
+    )
+    my_prompt = ChatPromptTemplate(
+        input_variables=['chat_history', 'content'],
+        messages=[
+            #Add an intermediate step to compare user question with DB question and ask AI to respond accordingly.
+            SystemMessage(content = system_message + relevant_chunk),
+            MessagesPlaceholder(variable_name = 'chat_history'),
+            HumanMessagePromptTemplate.from_template('{content}')
+        ]
+    )
+    chain = LLMChain(
+        llm=my_llm,
+        prompt=my_prompt,
+        memory=my_memory,
+        verbose=False
+    )
+    response = chain.invoke({'content':user_input})
+    return response["text"]

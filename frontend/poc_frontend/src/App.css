@@ -1,56 +1,71 @@
-body {
+#root{
+  height:  100vh;
+  margin: 0 auto;
+  width: 100%;
+  
+}
+html, body {
   font-family: Arial, sans-serif;
+  height: 100vh;
   margin: 0;
   padding: 0;
-  height: 100%;
-  
 }
 
 .container {
   display: flex;
-  height: 100%;
+  height: max-content;
+  width: fit-content;
   background-color: rgb(231, 231, 231);
+  flex-direction: row;
+  margin : none;
 }
 
 .sidebar {
-  width: 200px;
+  flex : 1;
   background-color: #ffffff;
-  padding: 20px;
-  padding-top: 40px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .logo {
-  margin-top: 40px;
+  
   font-size: 24px;
   font-weight: bold;
 }
 
 .bank-name {
-  margin-top: 10px;
+  flex : 1;
   font-size: 16px;
+  margin-top: 2.5em;
 }
 
 .main {
-  flex: 1;
-  padding: 20px;
-  height: 100%;
-  
+  flex: 3;
+  padding: 3em;
+  padding-bottom: 0%;
+  display: flex;
+  flex-direction: column;
 }
 
-.header {
+.header{
+  flex :0;
+}
+.header-text {
   text-align: center;
   font-size: 30px;
   margin-bottom: 60px;
   box-shadow: 0px 4px 4px 4px gray;
   padding: 10px;
+  
 }
 
 .dropdown-section {
   display: flex;
-  gap: 100px;
+  gap: 80px;
   justify-content: left;
   margin-bottom: 20px;
+  flex : 0;
 }
 
 .dropdown label {
@@ -141,4 +156,47 @@ body {
   text-align: center;
   white-space: pre-line;
   color: darkmagenta;
+}
+.menu-option {
+  flex : 4;
+  
+}
+.menu-btn {
+  width: 85%;
+  color: black;
+  background-color: #f3f4f6; /* Equivalent to Tailwind's bg-gray-100 */
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  gap: 1rem; /* Equivalent to Tailwind's gap-4 */
+  border: 2px solid #d1d5db; /* Equivalent to Tailwind's border-gray-300 */
+  padding: 1.5rem; /* Equivalent to Tailwind's p-6 */
+
+  border-radius: 0.5rem; /* Equivalent to Tailwind's rounded-lg */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Equivalent to Tailwind's shadow-lg */
+  height: 5.5em;
+  margin-bottom: 1.5em;
+  
+}
+
+.menu-btn:hover {
+  background-color: #ffe600; /* Equivalent to Tailwind's bg-blue-600 */
+  color: black;
+}
+
+.intepret-table {
+  overflow-y: auto;
+  flex: 1;
+  
+}
+.i-head{
+  display: flex;
+  flex-direction: row;
+  height : 10%;
+}
+.i-title{
+  flex:1;
+  font-size: 20px;
+}
+.i-cp{
+  flex:1
 }
