@@ -1,20 +1,18 @@
 #root{
-  height:  100vh;
+  height: 100vh;
   margin: 0 auto;
   width: 100%;
   
 }
 html, body {
   font-family: Arial, sans-serif;
-  height: 100vh;
   margin: 0;
   padding: 0;
 }
 
 .container {
   display: flex;
-  height: max-content;
-  width: fit-content;
+  height: 100vh;
   background-color: rgb(231, 231, 231);
   flex-direction: row;
   margin : none;
@@ -43,13 +41,12 @@ html, body {
 .main {
   flex: 3;
   padding: 3em;
-  padding-bottom: 0%;
   display: flex;
   flex-direction: column;
 }
 
 .header{
-  flex :0;
+  flex: 1;
 }
 .header-text {
   text-align: center;
@@ -64,8 +61,8 @@ html, body {
   display: flex;
   gap: 80px;
   justify-content: left;
-  margin-bottom: 20px;
-  flex : 0;
+  
+  flex : 1;
 }
 
 .dropdown label {
@@ -80,6 +77,7 @@ html, body {
 }
 
 .interpret-button {
+  margin-top: 3.5em;
   background-color: #ffe600;
   border: none;
   cursor: pointer;
@@ -93,18 +91,22 @@ html, body {
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  
 }
 
-.data-table th, .data-table td {
+.data-table th{
+  
+  padding: 8px;
+  text-align: center;
+  background-color: darkgray;
+  
+}
+.data-table td {
   border: 1px solid black;
   padding: 8px;
   text-align: center;
 }
 
-.data-table th {
-  background-color: #ddd;
-}
 .title {
  width: 10%;
 }
@@ -143,12 +145,11 @@ html, body {
 }
 .loading {
   text-align: center;
-  margin-top: 100px;
   font-size: xx-large;
 }
 .warning {
   text-align: left;
-  margin-top: 20px;
+  
   color: red;
 }
 .qna{
@@ -183,10 +184,11 @@ html, body {
   color: black;
 }
 
-.intepret-table {
-  overflow-y: auto;
-  flex: 1;
-  
+.interpret-table {
+ 
+  flex:4;
+  overflow-y:scroll;
+  scrollbar-width: none;
 }
 .i-head{
   display: flex;
@@ -199,4 +201,14 @@ html, body {
 }
 .i-cp{
   flex:1
+}
+thead{
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  
+  
+}
+tbody{
+  overflow-y: auto;
 }

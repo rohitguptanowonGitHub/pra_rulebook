@@ -329,9 +329,12 @@ useEffect(() => {
     
   };
 
-  const copyInterpretation = () => {
-    const interpretationText = document.querySelector('.ci-content')?.textContent || '';
-    navigator.clipboard.writeText(interpretationText);
+  const copyInterpretation = (e) => {
+    const rowElement = e.target.closest('tr');
+    if (rowElement) {
+      const interpretationText = rowElement.querySelector('.ci-content')?.textContent || '';
+      navigator.clipboard.writeText(interpretationText);
+    }
   }
 
   return (
@@ -367,7 +370,7 @@ useEffect(() => {
         <div className="dropdown-section">
           {/* Return Dropdown */}
           <div className="dropdown">
-            <label>Return ID/ Name:</label>
+            <h2>Return ID/ Name:</h2>
             <select value={selectedReturn} onChange={handleReturnChange}>
               <option value="">Select Return</option>
               {Object.keys(data).map((returnName) => (
@@ -380,7 +383,7 @@ useEffect(() => {
 
           {/* Schedule Dropdown */}
           <div className="dropdown">
-            <label>Schedules:</label>
+            <h2>Schedules:</h2>
             <select
               value={selectedSchedule}
               onChange={handleScheduleChange}
@@ -398,7 +401,7 @@ useEffect(() => {
 
           {/* Item Dropdown */}
           <div className="dropdown">
-            <label>Item Value/ ID:</label>
+            <h2>Item Value/ ID:</h2>
             <select
               value={selectedItem}
               onChange={handleItemChange}
@@ -437,7 +440,7 @@ useEffect(() => {
               <th className = "interpretation-h ">Interpretation</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="table-body">
             {tableData.length > 0 ? (
               tableData.map((row, index) => (
                 <tr key={index}>
@@ -456,7 +459,7 @@ useEffect(() => {
                   <td className="interpretation"><tr className="interpretation-content">
                     <div className="i-head">
                       <div className="i-title"><b>Interpretation:</b></div>
-                      <div className="ci-btn"><Button border icon={<FontAwesomeIcon icon={faCopy} />} onClick={copyInterpretation}></Button></div>
+                      <div className="ci-btn"><Button border icon={<FontAwesomeIcon icon={faCopy} />} onClick={copyInterpretation}>Copy</Button></div>
                       </div>
                       <div className="ci-content">{row.interpretation}</div> </tr><tr className="warning" ><b>Article Reference: </b><em>{row.warning}</em></tr></td>
                 </tr>
