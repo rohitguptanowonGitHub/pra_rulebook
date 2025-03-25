@@ -18,7 +18,6 @@ import {
   TypingIndicator,
   ConversationHeader,
   Avatar,
-  ArrowButton,
   MessageSeparator,
   Button,
 } from "@chatscope/chat-ui-kit-react";
@@ -74,8 +73,8 @@ export function ChatBot(props) {
     const apiRequestBody = {
       user_prompt: chatMessage.message,
     };
-
-    await fetch("http://127.0.0.1:8000/aichat", {
+    const apiUrl = process.env.REACT_APP_API_URL; // Get API URL from .env
+    await fetch(`${apiUrl}/aichat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

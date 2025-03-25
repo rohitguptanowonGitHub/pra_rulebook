@@ -248,7 +248,10 @@ function App() {
   };
   
   async function getInterpretation(selectedItem) {
-    await fetch(`http://127.0.0.1:8000/process?input_value=${selectedItem}`, {
+    const hostName = process.env.REACT_APP_API_URL;
+    const apiUrl = `${hostName}/process?input_value=${selectedItem}`// Get API URL from .env
+    console.log(apiUrl);
+    await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
