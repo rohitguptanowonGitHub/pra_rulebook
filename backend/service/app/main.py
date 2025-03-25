@@ -1,6 +1,7 @@
 import sys
 from dotenv import load_dotenv
 import os
+import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 # Load environment variables from .env file
 load_dotenv()
@@ -24,5 +25,5 @@ def read_root():
 app.include_router(api_router)
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 8000))  # Render provides PORT dynamically
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
