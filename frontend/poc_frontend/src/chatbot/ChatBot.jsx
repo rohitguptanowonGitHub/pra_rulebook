@@ -6,6 +6,8 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import "./ChatBot.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMinimize } from "@fortawesome/free-solid-svg-icons";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import {
   MainContainer,
@@ -18,6 +20,7 @@ import {
   Avatar,
   ArrowButton,
   MessageSeparator,
+  Button,
 } from "@chatscope/chat-ui-kit-react";
 
 export function ChatBot(props) {
@@ -62,7 +65,7 @@ export function ChatBot(props) {
     await processMessageToChatGPT(newMessage, newMessages);
   };
   function selectAvatar(chatMessage) {
-    if (chatMessage.sender == "user")
+    if (chatMessage.sender === "user")
       return "https://chatscope.io/storybook/react/assets/joe-v8Vy3KOS.svg";
     else
       return "https://chatscope.io/storybook/react/assets/emily-xzL8sDL2.svg";
@@ -123,7 +126,10 @@ export function ChatBot(props) {
               />
               <ConversationHeader.Content info="Active now" userName="PRAgma" />
               <ConversationHeader.Actions>
-                <ArrowButton direction="down" onClick={props.toggle} />
+                <Button
+                  icon={<FontAwesomeIcon icon={faMinimize} />}
+                  onClick={props.toggle}
+                ></Button>
               </ConversationHeader.Actions>
             </ConversationHeader>
 
