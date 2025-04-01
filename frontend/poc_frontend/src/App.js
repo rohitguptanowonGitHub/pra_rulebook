@@ -220,23 +220,21 @@ function App() {
     border: '2px solid black'
   };
   let show = {
-    bg: '#04AA6e',
+    backgroundColor: '#f3f4f6',
   };
 
 
-  const btnToggle = (e) => {
-    const value = e.target.value;
-    if (value === "RuleBook Interpreter") {
-      setChatopen(false);
-      setActiveButtonRB(true);
-      setActiveButtonCB(false);
-    } else if (value === "PRA Advisor") {
-      setChatopen(true);
-      setActiveButtonRB(false);
-      setActiveButtonCB(true);
-    }
-   
+  const btnToggle = (value) => {
+    const isRuleBook = value === "RuleBook Interpreter";
+    const isPRAAdvisor = value === "PRA Advisor";
+  
+    console.log(value);
+  
+    setChatopen(isPRAAdvisor); // Open chat only for "PRA Advisor"
+    setActiveButtonRB(isRuleBook); // Activate RuleBook button
+    setActiveButtonCB(isPRAAdvisor); // Activate PRA Advisor button
   };
+
   // Function to toggle chatbot visibility
   const toggle = (e) => {
     if(chatopen){
@@ -287,7 +285,7 @@ useEffect(() => {
       setIsInterpreting(false);
       setIsLoading(false);
     }
-  }, [interpretation,articles,warning, qnalist, articlesTitle ]);
+  }, [interpretation,articles,warning, qnalist, articlesTitle]);
   // When Return is selected, auto-update Schedule & Item
   const handleReturnChange = (event) => {
     const newReturn = event.target.value;
@@ -356,8 +354,8 @@ useEffect(() => {
 </defs>
 </svg></div>
     <div className="menu-option">
-     <Button className="menu-btn" style={activeButtonRB ? hide : show} onClick={btnToggle} value="RuleBook Interpreter"><b>RuleBook Interpreter</b></Button>
-     <Button className="menu-btn" style={activeButtonCB ? hide : show} onClick={btnToggle}  value="PRA Advisor"><b>PRA Advisor</b></Button>
+     <Button className="menu-btn" style={activeButtonRB ? hide : show} onClick={() => btnToggle("RuleBook Interpreter")} value="RuleBook Interpreter"><b>RuleBook Interpreter</b></Button>
+     <Button className="menu-btn" style={activeButtonCB ? hide : show} onClick={() => btnToggle("PRA Advisor")}  value="PRA Advisor"><b>PRA Advisor</b></Button>
    
     </div>
     
@@ -423,9 +421,9 @@ useEffect(() => {
           </div>
 
           {/* Action Button */}
-          <button className="interpret-button" onClick={handlePerformInterpretation}>
+          <Button className="interpret-button" onClick={handlePerformInterpretation}>
             Perform Interpretation
-          </button>
+          </Button>
         </div>
 
         {/* Table Section */}

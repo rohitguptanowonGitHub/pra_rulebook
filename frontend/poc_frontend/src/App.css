@@ -79,13 +79,13 @@ html, body {
 .interpret-button {
   margin-top: 3.5em;
   background-color: #ffe600;
-  border: none;
   cursor: pointer;
   font-weight: bold;
   color: #000;
   width: 250px;
   height: 40px;
   border-radius: 10px;
+  border: 2px solid #d1d5db;
 }
 
 .data-table {

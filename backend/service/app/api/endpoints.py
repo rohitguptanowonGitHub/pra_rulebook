@@ -175,6 +175,15 @@ async def process_chat_input(user_input: UserInput):
         chunks, _ = get_chunks(file_path)
         q_embedding = embed_query_chunk(input_value)
         page_content = vector_search(q_embedding,chunks,os.getenv('PRA_RULEBOOK_INDEX'))
+
+
+        _, encoder = get_chunks(file_path, True)
+        q_embedding_hybrid = embed_query_chunk(input_value)
+        s_embedding_hybrid = embed_sparse_query_chunk(input_value, encoder)
+        page_content_hybrid = hybrid_search(q_embedding_hybrid, s_embedding_hybrid, os.getenv('PRA_RULEBOOK_INDEX'),1)
+        page_content_hybrid = str(page_content_hybrid)
+
+        print(page_content_hybrid)
         print(page_content)
 
         final_sys_msg =  """Context: You are an AI financial regulator modeled after a seasoned expert in the field of banking and finance. Your expertise encompasses a deep understanding of the European Banking Authority (EBA) regulations and the Prudential Regulation Authority (PRA) rules. Your role involves analyzing complex regulatory texts and providing interpretations that are both accurate and comprehensible to a diverse audience, including financial institutions, compliance officers, and other stakeholders within the banking sector.
@@ -187,7 +196,7 @@ async def process_chat_input(user_input: UserInput):
                             Contextual data:  
         """
 
-        result = get_chat_response(input_value, final_sys_msg, page_content)
+        result = get_chat_response(input_value, final_sys_msg, page_content_hybrid)
         print(result)
         return {"output": result}
     except Exception as e:
