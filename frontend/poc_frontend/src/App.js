@@ -214,6 +214,8 @@ function App() {
   const [chatopen, setChatopen] = useState(false); // State to control chatbot visibility
   const [activeButtonRB, setActiveButtonRB] = useState(true);
   const [activeButtonCB, setActiveButtonCB] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(""); // Stores the current loading step
+  const [copyPrompt, setCopyPrompt] = useState({ visible: false, position: { x: 0, y: 0 } });
   
   let hide = {
     backgroundColor: '#ffe600',
@@ -247,25 +249,60 @@ function App() {
   
   async function getInterpretation(selectedItem) {
     const hostName = process.env.REACT_APP_API_URL;
-    const apiUrl = `${hostName}/process?input_value=${selectedItem}`// Get API URL from .env
-    console.log(apiUrl);
-    await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((data) => {
-        return data.json();
-      })
-      .then((data) => {
+    const apiUrl = `${hostName}/process?input_value=${selectedItem}`;// Get API URL from .env
+    const eventSource = new EventSource(apiUrl);
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      
+      if (data.step) {
+        setLoadingStep(data.step); // Update the loading step dynamically
+      }
+
+      if (data.output) {
+        console.log("I am here")
+        // Final output received
         setInterpretation(data.output);
         setArticles(data.articles);
         setWarning(data.warning);
         setArticlesTitle(data.additional_articles);
         setQnalist(data.qna_refs);
-        console.log(data);
-      });
+        eventSource.close(); // Close the SSE connection
+      }
+
+      if (data.error) {
+        console.error("Error:", data.error);
+        setLoadingStep("An error occurred during interpretation.");
+        setIsInterpreting(false);
+        setIsLoading(false);
+        eventSource.close(); // Close the SSE connection
+      }
+    };
+    eventSource.onerror = (error) => {
+      console.error("SSE Error:", error);
+      setLoadingStep("An error occurred while connecting to the server.");
+      setIsInterpreting(false);
+      setIsLoading(false);
+      eventSource.close(); // Close the SSE connection
+    };
+    
+    // console.log(apiUrl);
+    // await fetch(apiUrl, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // })
+    //   .then((data) => {
+    //     return data.json();
+    //   })
+    //   .then((data) => {
+    //     setInterpretation(data.output);
+    //     setArticles(data.articles);
+    //     setWarning(data.warning);
+    //     setArticlesTitle(data.additional_articles);
+    //     setQnalist(data.qna_refs);
+    //     console.log(data);
+    //   });
   }
 useEffect(() => {
     if (isInterpreting) {
@@ -335,11 +372,41 @@ useEffect(() => {
     if (rowElement) {
       const interpretationText = rowElement.querySelector('.ci-content')?.textContent || '';
       navigator.clipboard.writeText(interpretationText);
+ 
+    // Get the position of the button click
+    const rect = e.target.getBoundingClientRect();
+    const position =  { x: rect.left + window.scrollX, y: rect.top + window.scrollY - 20 }; // Adjust position above the button
+
+    //show the prompt
+    setCopyPrompt({ visible: true, position });
+
+    //Hide the prompt after 2 secs
+    setTimeout(()=>{
+      setCopyPrompt({ visible: false, position: { x: 0, y: 0 } });}, 1000);
     }
   }
 
   return (
+    
     <div className="container">
+      {copyPrompt.visible && (
+  <div
+    className="copy-prompt"
+    style={{
+      position: 'absolute',
+      top: `${copyPrompt.position.y}px`,
+      left: `${copyPrompt.position.x}px`,
+      backgroundColor: '#000',
+      color: '#fff',
+      padding: '5px 10px',
+      borderRadius: '5px',
+      fontSize: '12px',
+      zIndex: 1000,
+    }}
+  >
+    Copied!
+  </div>
+)}
       {/* Sidebar */}
       <div className="sidebar">
         <div className="bank-name"><svg width="92" height="100" viewBox="0 0 92 100" fill="none"> 
@@ -429,7 +496,7 @@ useEffect(() => {
         {/* Table Section */}
         <div className="interpret-table">
         {isLoading ? (
-          <div className="loading">Generating Interpretation...</div>
+          <div className="loading">{loadingStep}</div>
         )  : (<table className="data-table">
           <thead>
             <tr>
